@@ -1,0 +1,435 @@
+///////////////////////////////////////////////////////////
+//
+// AnonMind Database Schema
+//
+// Version : 1.0
+// Database: PostgreSQL
+//
+// This DBML file is the single source of truth for the
+// database architecture.
+//
+// Every Django model must follow this schema.
+//
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+//
+// Authentication Module
+//
+///////////////////////////////////////////////////////////
+
+Enum MessageSender {
+  USER
+  AI
+}
+
+Enum MoodType {
+  HAPPY
+  SAD
+  ANXIOUS
+  STRESSED
+  CALM
+  ANGRY
+  LONELY
+  EXCITED
+}
+
+Enum ConsultationMode {
+  ONLINE
+  OFFLINE
+}
+Enum AppointmentStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  RESCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+Enum NotificationType {
+
+  APPOINTMENT
+
+  DOCTOR_VERIFICATION
+
+  REMINDER
+
+  SYSTEM
+}
+
+
+Table User {
+
+  id uuid [pk]
+
+  email varchar [unique]
+
+  password_hash varchar
+
+  auth_provider varchar
+
+  role varchar
+
+  first_name varchar
+
+  last_name varchar
+
+  date_of_birth date
+
+   
+
+  profile_picture varchar [null]
+
+  email_verified boolean
+
+  is_active boolean
+
+  created_at timestamp
+
+  updated_at timestamp
+}
+
+Table PatientProfile {
+
+  id uuid [pk]
+
+  user_id uuid [unique]
+
+  gender varchar
+
+  about_me text [null]
+
+  emergency_contact_name varchar [null]
+
+  emergency_contact_phone varchar [null]
+
+  preferred_language varchar
+
+  timezone varchar
+
+  created_at timestamp
+
+  updated_at timestamp
+}
+
+Table DoctorProfile {
+
+  id uuid [pk]
+
+  user_id uuid [unique]
+
+  specialization varchar
+
+  qualification varchar
+
+  years_of_experience integer
+
+  clinic_name varchar
+
+  clinic_address text
+
+  consultation_fee decimal
+
+  phone_number varchar
+
+  biography text [null]
+
+  languages_spoken varchar
+
+  created_at timestamp
+
+  updated_at timestamp
+}
+
+Table DoctorVerification {
+
+  id uuid [pk]
+
+  doctor_profile_id uuid
+
+  license_number varchar [unique]
+
+  degree_certificate varchar
+
+  government_id varchar
+
+  verification_status varchar
+
+  admin_comments text [null]
+
+  verified_by_user_id uuid [null]
+
+  verified_at timestamp [null]
+
+  submitted_at timestamp
+}
+
+Ref: PatientProfile.user_id - User.id
+
+Ref: DoctorProfile.user_id - User.id
+
+Ref: DoctorVerification.doctor_profile_id > DoctorProfile.id
+
+Ref: DoctorVerification.verified_by_user_id > User.id
+
+
+
+Enum ConversationStatus {
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+///////////////////////////////////////////////////////////
+//
+// Conversation Table
+//
+///////////////////////////////////////////////////////////
+
+Table Conversation {
+
+  id uuid [pk]
+
+  patient_profile_id uuid
+
+  title varchar [null]
+
+  status ConversationStatus [default: 'ACTIVE']
+
+  ended_at timestamp [null]
+
+  is_deleted boolean [default: false]
+
+  deleted_at timestamp [null]
+
+  created_at timestamp
+
+  updated_at timestamp
+}
+
+Ref: Conversation.patient_profile_id > PatientProfile.id
+
+
+///////////////////////////////////////////////////////////
+//
+// AI Consultation Brief Table
+//
+///////////////////////////////////////////////////////////
+
+Table AIConsultationBrief {
+
+  id uuid [pk]
+
+  conversation_id uuid [unique]
+
+  summary text
+
+  key_concerns text
+
+  mood_analysis text
+
+  suggested_topics text
+
+  created_at timestamp
+
+  updated_at timestamp
+}
+
+Ref: AIConsultationBrief.conversation_id - Conversation.id
+
+///////////////////////////////////////////////////////////
+//
+// Mood Entry Table
+//
+///////////////////////////////////////////////////////////
+
+Table MoodEntry {
+
+  id uuid [pk]
+
+  patient_profile_id uuid
+
+  mood Mood
+
+  intensity integer
+
+  note text [null]
+
+  recorded_at timestamp
+
+  created_at timestamp
+
+  updated_at timestamp
+}
+
+Ref: MoodEntry.patient_profile_id > PatientProfile.id
+
+///////////////////////////////////////////////////////////
+//
+// Journal Entry Table
+//
+///////////////////////////////////////////////////////////
+
+Table JournalEntry {
+
+  id uuid [pk]
+
+  patient_profile_id uuid
+
+  title varchar [null]
+
+  content text
+
+  mood_entry_id uuid [null]
+
+  created_at timestamp
+
+  updated_at timestamp
+}
+
+Ref: JournalEntry.patient_profile_id > PatientProfile.id
+
+Ref: JournalEntry.mood_entry_id > MoodEntry.id
+
+///////////////////////////////////////////////////////////
+//
+// Appointment Table
+//
+///////////////////////////////////////////////////////////
+
+Table Appointment {
+
+  id uuid [pk]
+
+  patient_profile_id uuid
+
+  doctor_profile_id uuid
+
+  consultation_brief_id uuid [null]
+
+  consultation_mode ConsultationMode
+
+  meeting_link varchar [null]
+
+  appointment_date date
+
+  appointment_time time
+
+  status AppointmentStatus
+
+  doctor_note text [null]
+
+  patient_note text [null]
+
+  share_mood_history boolean [default: false]
+
+  mood_from_date date [null]
+
+  mood_to_date date [null]
+
+  share_journal boolean [default: false]
+
+  journal_from_date date [null]
+
+  journal_to_date date [null]
+
+  created_at timestamp
+
+  updated_at timestamp
+}
+
+Ref: Appointment.patient_profile_id > PatientProfile.id
+
+Ref: Appointment.doctor_profile_id > DoctorProfile.id
+
+Ref: Appointment.consultation_brief_id > AIConsultationBrief.id
+
+///////////////////////////////////////////////////////////
+//
+// Doctor Consultation Note Table
+//
+///////////////////////////////////////////////////////////
+
+Table DoctorConsultationNote {
+
+  id uuid [pk]
+
+  appointment_id uuid [unique]
+
+  diagnosis text [null]
+
+  observations text
+
+  treatment_plan text [null]
+
+  follow_up_required boolean [default: false]
+
+  follow_up_date date [null]
+
+  created_at timestamp
+
+  updated_at timestamp
+}
+
+Ref: DoctorConsultationNote.appointment_id - Appointment.id
+
+///////////////////////////////////////////////////////////
+//
+// Review Table
+//
+///////////////////////////////////////////////////////////
+
+Table Review {
+
+  id uuid [pk]
+
+  appointment_id uuid [unique]
+
+  patient_profile_id uuid
+
+  doctor_profile_id uuid
+
+  rating integer
+
+  review_text text [null]
+
+  created_at timestamp
+
+  updated_at timestamp
+}
+
+Ref: Review.appointment_id - Appointment.id
+
+Ref: Review.patient_profile_id > PatientProfile.id
+
+Ref: Review.doctor_profile_id > DoctorProfile.id
+
+///////////////////////////////////////////////////////////
+//
+// Notification Table
+//
+///////////////////////////////////////////////////////////
+
+Table Notification {
+
+  id uuid [pk]
+
+  user_id uuid
+
+  title varchar
+
+  message text
+
+  type NotificationType
+
+  action_url varchar [null]
+
+  is_read boolean [default: false]
+
+  read_at timestamp [null]
+
+  created_at timestamp
+}
+
+Ref: Notification.user_id > User.id
