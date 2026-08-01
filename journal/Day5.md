@@ -392,7 +392,7 @@ Doctor
 
 ↓
 
-Registration
+Registration required
 
 ↓
 
