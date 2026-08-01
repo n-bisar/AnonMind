@@ -13,29 +13,46 @@ class User(AbstractBaseUser, PermissionsMixin):
         DOCTOR = "DOCTOR", "Doctor"
         ADMIN = "ADMIN", "Admin"
 
+    class VerificationStatus(models.TextChoices):
+        NOT_REQUIRED = "NOT_REQUIRED", "Not Required"
+        PENDING = "PENDING", "Pending"
+        VERIFIED = "VERIFIED", "Verified"
+        REJECTED = "REJECTED", "Rejected"
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
+
+    email = models.EmailField(
+        unique=True,
+        max_length=255,
+    )
+
+    full_name = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+    )
+
     role = models.CharField(
         max_length=20,
         choices=Role.choices,
-        default=Role.PATIENT)
+        default=Role.PATIENT,
+    )
+
+    verification_status = models.CharField(
+        max_length=20,
+        choices=VerificationStatus.choices,
+        default=VerificationStatus.NOT_REQUIRED,
+    )
 
     is_active = models.BooleanField(default=True)
 
     is_staff = models.BooleanField(default=False)
 
-    is_verified = models.BooleanField(default=False)
-
     date_joined = models.DateTimeField(auto_now_add=True)
-
-    id = models.UUIDField(
-        primary_key=True,
-        default=uuid.uuid4,
-        editable=False
-    )
-
-    email = models.EmailField(
-        unique=True,
-        max_length=255
-    )
 
     objects = UserManager()
 
