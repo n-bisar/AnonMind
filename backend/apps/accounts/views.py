@@ -2,22 +2,27 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_str
+from django.shortcuts import get_object_or_404
 
-from .serializers import UserRegistrationSerializer
-from .serializers import LoginSerializer
+from .serializers import PatientRegistrationSerializer
+from .serializers import PatientLoginSerializer
+from .models import User
+from .tokens import email_verification_token
 
 
-class RegisterAPIView(APIView):
+class PatientRegistrationAPIView(APIView):
 
     def post(self, request):
-        serializer = UserRegistrationSerializer(data=request.data)
+        serializer = PatientRegistrationSerializer(data=request.data)
 
         if serializer.is_valid():
             user = serializer.save()
 
             return Response(
                 {
-                    "message": "User registered successfully."
+                    "message": "Registration successful. Please check your email to verify your account before logging in."
                 },
                 status=status.HTTP_201_CREATED
             )
@@ -27,10 +32,10 @@ class RegisterAPIView(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-class LoginAPIView(APIView):
+class PatientLoginAPIView(APIView):
 
     def post(self, request):
-        serializer = LoginSerializer(data=request.data)
+        serializer = PatientLoginSerializer(data=request.data)
 
         serializer.is_valid(raise_exception=True)
 
@@ -45,3 +50,34 @@ class LoginAPIView(APIView):
         },
             status=status.HTTP_200_OK,
     )
+
+class VerifyEmailAPIView(APIView):
+
+    def get(self, request, uidb64, token):
+
+        user_id = force_str(
+        urlsafe_base64_decode(uidb64)
+        )
+
+        user = get_object_or_404(
+            User,
+            pk=user_id,
+        )
+
+        if not email_verification_token.check_token(user, token):
+            return Response(
+            {
+            "message": "Invalid or expired verification link."
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+    )
+
+        user.email_verified = True
+        user.save()
+
+        return Response(
+            {
+                "message": "Email verified successfully. You can now log in."
+            },
+            status=status.HTTP_200_OK,
+        )

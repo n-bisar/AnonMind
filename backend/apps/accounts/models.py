@@ -48,6 +48,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=VerificationStatus.NOT_REQUIRED,
     )
 
+    email_verified = models.BooleanField(
+    default=False,
+    )
+
     is_active = models.BooleanField(default=True)
 
     is_staff = models.BooleanField(default=False)
@@ -61,3 +65,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+class DoctorProfile(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name="doctor_profile",
+    )

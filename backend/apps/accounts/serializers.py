@@ -2,8 +2,9 @@ from rest_framework import serializers
 from .models import User
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import authenticate
+from .email import send_verification_email
 
-class UserRegistrationSerializer(serializers.ModelSerializer):
+class PatientRegistrationSerializer(serializers.ModelSerializer):
 
     confirm_password = serializers.CharField(
         write_only=True,
@@ -43,9 +44,13 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop("confirm_password")
 
-        return User.objects.create_user(**validated_data)
+        user = User.objects.create_user(**validated_data)
 
-class LoginSerializer(serializers.Serializer):
+        send_verification_email(user)
+
+        return user
+
+class PatientLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
 
@@ -64,6 +69,13 @@ class LoginSerializer(serializers.Serializer):
                 "detail": "Invalid email or password."
             }
         )
+
+        if not user.email_verified:
+            raise serializers.ValidationError(
+        {
+            "detail": "Please verify your email before logging in."
+        }
+    )
 
         attrs["user"] = user
 

@@ -1,20 +1,27 @@
 from django.urls import path
 
 from .views import (
-    RegisterAPIView,
-    LoginAPIView,
+    PatientRegistrationAPIView,
+    PatientLoginAPIView,
+    VerifyEmailAPIView,
 )
 
 urlpatterns = [
     path(
-        "register/",
-        RegisterAPIView.as_view(),
+        "patient/register/",
+        PatientRegistrationAPIView.as_view(),
         name="register",
     ),
 
     path(
-        "login/",
-        LoginAPIView.as_view(),
+        "patient/login/",
+        PatientLoginAPIView.as_view(),
         name="login",
+    ),
+
+    path(
+    "patient/verify-email/<uidb64>/<token>/",
+    VerifyEmailAPIView.as_view(),
+    name="verify-email",
     ),
 ]
