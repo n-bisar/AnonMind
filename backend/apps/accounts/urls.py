@@ -4,6 +4,7 @@ from .views import (
     PatientRegistrationAPIView,
     PatientLoginAPIView,
     VerifyEmailAPIView,
+    DoctorRegistrationAPIView,
 )
 
 urlpatterns = [
@@ -24,4 +25,10 @@ urlpatterns = [
     VerifyEmailAPIView.as_view(),
     name="verify-email",
     ),
+
+    path(
+    "doctor/register/",
+    DoctorRegistrationAPIView.as_view(),
+    name="doctor-register",
+),
 ]

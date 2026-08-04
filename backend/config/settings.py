@@ -164,3 +164,7 @@ STATIC_URL = 'static/'
 
 
 AUTH_USER_MODEL = "accounts.User"
+
+# Media files (User uploads)
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"

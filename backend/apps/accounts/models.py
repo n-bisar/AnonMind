@@ -68,7 +68,81 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class DoctorProfile(models.Model):
     user = models.OneToOneField(
-        User,
+    User,
+    on_delete=models.CASCADE,
+    related_name="doctor_profile",
+)
+
+    phone_number = models.CharField(
+    max_length=20,
+    blank=True,
+    null=True,
+)
+
+    registration_number = models.CharField(
+    max_length=100,
+    unique=True,
+    blank=True,
+    null=True,
+)
+
+    specialization = models.CharField(
+    max_length=100,
+    blank=True,
+    null=True,
+)
+
+    years_of_experience = models.PositiveIntegerField(
+    blank=True,
+    null=True,
+)
+
+    hospital = models.CharField(
+    max_length=255,
+    blank=True,
+    null=True,
+)
+
+    created_at = models.DateTimeField(
+    auto_now_add=True,
+    null=True,
+)
+
+    updated_at = models.DateTimeField(
+    auto_now=True,
+    null=True,
+)
+
+    def __str__(self):
+        return self.user.full_name
+
+
+class DoctorDocument(models.Model):
+    doctor = models.OneToOneField(
+        DoctorProfile,
         on_delete=models.CASCADE,
-        related_name="doctor_profile",
+        related_name="documents",
     )
+
+    medical_degree = models.FileField(
+        upload_to="doctor_documents/degrees/"
+    )
+
+    medical_license = models.FileField(
+        upload_to="doctor_documents/licenses/"
+    )
+
+    government_id = models.FileField(
+        upload_to="doctor_documents/government_ids/"
+    )
+
+    profile_photo = models.ImageField(
+        upload_to="doctor_documents/profile_photos/"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Documents - {self.doctor.user.full_name}"

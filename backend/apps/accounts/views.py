@@ -5,11 +5,13 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
 from django.shortcuts import get_object_or_404
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from .serializers import PatientRegistrationSerializer
 from .serializers import PatientLoginSerializer
 from .models import User
 from .tokens import email_verification_token
+from .serializers import DoctorRegistrationSerializer
 
 
 class PatientRegistrationAPIView(APIView):
@@ -80,4 +82,31 @@ class VerifyEmailAPIView(APIView):
                 "message": "Email verified successfully. You can now log in."
             },
             status=status.HTTP_200_OK,
+        )
+
+class DoctorRegistrationAPIView(APIView):
+    parser_classes = [
+        MultiPartParser,
+        FormParser,
+    ]
+    def post(self, request):
+        serializer = DoctorRegistrationSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return Response(
+            {
+                "message": (
+                    "Doctor registered successfully. "
+                    "Please verify your email. "
+                    "Your account will be activated after admin verification."
+                )
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+        return Response(
+        serializer.errors,
+        status=status.HTTP_400_BAD_REQUEST,
         )
