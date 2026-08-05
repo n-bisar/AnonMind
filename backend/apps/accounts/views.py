@@ -12,6 +12,8 @@ from .serializers import PatientLoginSerializer
 from .models import User
 from .tokens import email_verification_token
 from .serializers import DoctorRegistrationSerializer
+from .services import verify_user_email
+from .serializers import DoctorLoginSerializer
 
 
 class PatientRegistrationAPIView(APIView):
@@ -109,4 +111,21 @@ class DoctorRegistrationAPIView(APIView):
         return Response(
         serializer.errors,
         status=status.HTTP_400_BAD_REQUEST,
+        )
+
+class DoctorLoginAPIView(APIView):
+
+    def post(self, request):
+        serializer = DoctorLoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data["user"]
+
+        refresh = RefreshToken.for_user(user)
+
+        return Response(
+        {
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+        },
+            status=status.HTTP_200_OK,
         )

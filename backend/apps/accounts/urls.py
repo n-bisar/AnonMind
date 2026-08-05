@@ -5,6 +5,7 @@ from .views import (
     PatientLoginAPIView,
     VerifyEmailAPIView,
     DoctorRegistrationAPIView,
+    DoctorLoginAPIView
 )
 
 urlpatterns = [
@@ -15,20 +16,35 @@ urlpatterns = [
     ),
 
     path(
+        "doctor/register/",
+        DoctorRegistrationAPIView.as_view(),
+        name="register",
+    ),
+
+    path(
         "patient/login/",
         PatientLoginAPIView.as_view(),
-        name="login",
+        name="patient-login",
     ),
+
+    path(
+    "doctor/login/",
+    DoctorLoginAPIView.as_view(),
+    name="doctor-login",
+    ),  
 
     path(
     "patient/verify-email/<uidb64>/<token>/",
     VerifyEmailAPIView.as_view(),
-    name="verify-email",
+    name="patient-verify-email",
     ),
 
     path(
-    "doctor/register/",
-    DoctorRegistrationAPIView.as_view(),
-    name="doctor-register",
-),
+    "doctor/verify-email/<uidb64>/<token>/",
+    VerifyEmailAPIView.as_view(),
+    name="doctor-verify-email",
+    ),
+
+   
+
 ]

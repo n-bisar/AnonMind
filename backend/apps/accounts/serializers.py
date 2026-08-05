@@ -2,7 +2,9 @@ from rest_framework import serializers
 from .models import User
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import authenticate
-from .email import send_verification_email
+from .email import send_patient_verification_email
+from .email import send_doctor_verification_email
+
 from .models import User, DoctorProfile, DoctorDocument
 from django.db import transaction
 
@@ -49,7 +51,7 @@ class PatientRegistrationSerializer(serializers.ModelSerializer):
 
             user = User.objects.create_user(**validated_data)
 
-            send_verification_email(user)
+            send_patient_verification_email(user)
 
             return user
 
@@ -186,5 +188,47 @@ class DoctorRegistrationSerializer(serializers.Serializer):
                 profile_photo=profile_photo,
             )
         
-            send_verification_email(user)
+            send_doctor_verification_email(user)
             return user
+
+class DoctorLoginSerializer(serializers.Serializer):
+        email = serializers.EmailField()
+        password = serializers.CharField(write_only=True)
+
+        def validate(self, attrs):
+            email = attrs.get("email")
+            password = attrs.get("password")
+
+            user = authenticate(
+                email=email,
+                password=password,
+            )
+
+            if not user:
+                raise serializers.ValidationError(
+                {
+                    "detail": "Invalid email or password."
+                }
+                )
+
+            if not user.email_verified:
+                raise serializers.ValidationError(
+                {
+                    "detail": "Please verify your email before logging in."
+                }
+                )
+
+            if user.verification_status == User.VerificationStatus.PENDING:
+                raise serializers.ValidationError(
+                {
+                    "detail": "Your application is under verification."
+                }
+                )
+            if user.verification_status == User.VerificationStatus.REJECTED:
+                raise serializers.ValidationError(
+                {
+                    "detail": "Your application has been rejected."
+                }
+                )
+            attrs["user"] = user
+            return attrs
