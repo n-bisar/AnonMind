@@ -6,6 +6,11 @@ from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
 from django.shortcuts import get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import ValidationError
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenRefreshView
 
 from .serializers import PatientRegistrationSerializer
 from .serializers import PatientLoginSerializer
@@ -14,6 +19,8 @@ from .tokens import email_verification_token
 from .serializers import DoctorRegistrationSerializer
 from .services import verify_user_email
 from .serializers import DoctorLoginSerializer
+from .serializers import CurrentUserSerializer
+from .serializers import LogoutSerializer
 
 
 class PatientRegistrationAPIView(APIView):
@@ -129,3 +136,34 @@ class DoctorLoginAPIView(APIView):
         },
             status=status.HTTP_200_OK,
         )
+
+class CurrentUserAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = CurrentUserSerializer(request.user)
+        return Response(serializer.data)
+
+class LogoutAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = LogoutSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            refresh_token = serializer.validated_data["refresh"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+
+            return Response(
+                {"message": "Logout successful."},
+                status=status.HTTP_200_OK
+            )
+
+        except Exception:
+            raise ValidationError(
+                {"detail": "Invalid or expired refresh token."}
+            )

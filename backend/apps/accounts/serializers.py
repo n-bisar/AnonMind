@@ -232,3 +232,18 @@ class DoctorLoginSerializer(serializers.Serializer):
                 )
             attrs["user"] = user
             return attrs
+
+class CurrentUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "full_name",
+            "email",
+            "role",
+            "email_verified",
+            "verification_status",
+        ]
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()

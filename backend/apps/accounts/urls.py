@@ -5,7 +5,10 @@ from .views import (
     PatientLoginAPIView,
     VerifyEmailAPIView,
     DoctorRegistrationAPIView,
-    DoctorLoginAPIView
+    DoctorLoginAPIView,
+    CurrentUserAPIView,
+    LogoutAPIView,
+    TokenRefreshView
 )
 
 urlpatterns = [
@@ -45,6 +48,21 @@ urlpatterns = [
     name="doctor-verify-email",
     ),
 
+    path("accounts/me/", 
+         CurrentUserAPIView.as_view(), 
+         name="current-user"
+    ),
+
+    path("logout/", 
+         LogoutAPIView.as_view(), 
+         name="logout"
+    ),
+
+    path(
+    "token/refresh/",
+    TokenRefreshView.as_view(),
+    name="token_refresh",
+),
    
 
 ]
