@@ -24,6 +24,7 @@ from .serializers import LogoutSerializer
 from .permissions import IsAdminUser
 from .serializers import PendingDoctorSerializer
 from .serializers import AdminLoginSerializer
+from .serializers import DoctorDetailSerializer
 
 
 class PatientRegistrationAPIView(APIView):
@@ -203,5 +204,19 @@ class PendingDoctorsAPIView(APIView):
             pending_doctors,
             many=True,
         )
+
+        return Response(serializer.data)
+
+class DoctorDetailAPIView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request, doctor_id):
+        doctor = get_object_or_404(
+            User,
+            id=doctor_id,
+            role=User.Role.DOCTOR,
+        )
+
+        serializer = DoctorDetailSerializer(doctor)
 
         return Response(serializer.data)

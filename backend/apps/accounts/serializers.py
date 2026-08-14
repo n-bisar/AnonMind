@@ -313,3 +313,19 @@ class DoctorProfileSerializer(serializers.ModelSerializer):
             "hospital",
             "documents",
         ]
+
+class DoctorDetailSerializer(serializers.ModelSerializer):
+    doctor_profile = DoctorProfileSerializer(read_only=True)
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "full_name",
+            "email",
+            "role",
+            "verification_status",
+            "email_verified",
+            "date_joined",
+            "doctor_profile",
+        ]
