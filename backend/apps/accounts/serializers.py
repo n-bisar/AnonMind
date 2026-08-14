@@ -233,6 +233,37 @@ class DoctorLoginSerializer(serializers.Serializer):
             attrs["user"] = user
             return attrs
 
+class AdminLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, attrs):
+        email = attrs.get("email")
+        password = attrs.get("password")
+
+        user = authenticate(
+            email=email,
+            password=password,
+        )
+
+        if not user:
+            raise serializers.ValidationError(
+                {
+                    "detail": "Invalid email or password."
+                }
+            )
+
+        if user.role != User.Role.ADMIN:
+            raise serializers.ValidationError(
+                {
+                    "detail": "You are not authorized to access the admin account."
+                }
+            )
+
+        attrs["user"] = user
+
+        return attrs
+
 class CurrentUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -247,3 +278,38 @@ class CurrentUserSerializer(serializers.ModelSerializer):
 
 class LogoutSerializer(serializers.Serializer):
     refresh = serializers.CharField()
+
+class PendingDoctorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "full_name",
+            "email",
+            "date_joined",
+            "verification_status",
+        ]
+
+class DoctorDocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DoctorDocument
+        fields = [
+            "medical_degree",
+            "medical_license",
+            "government_id",
+            "profile_photo",
+        ]
+
+class DoctorProfileSerializer(serializers.ModelSerializer):
+    documents = DoctorDocumentSerializer(read_only=True)
+
+    class Meta:
+        model = DoctorProfile
+        fields = [
+            "phone_number",
+            "registration_number",
+            "specialization",
+            "years_of_experience",
+            "hospital",
+            "documents",
+        ]

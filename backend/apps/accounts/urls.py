@@ -8,7 +8,9 @@ from .views import (
     DoctorLoginAPIView,
     CurrentUserAPIView,
     LogoutAPIView,
-    TokenRefreshView
+    TokenRefreshView,
+    PendingDoctorsAPIView,
+    AdminLoginAPIView,
 )
 
 urlpatterns = [
@@ -37,6 +39,12 @@ urlpatterns = [
     ),  
 
     path(
+    "admin/login/",
+    AdminLoginAPIView.as_view(),
+    name="admin-login",
+),
+
+    path(
     "patient/verify-email/<uidb64>/<token>/",
     VerifyEmailAPIView.as_view(),
     name="patient-verify-email",
@@ -62,6 +70,12 @@ urlpatterns = [
     "token/refresh/",
     TokenRefreshView.as_view(),
     name="token_refresh",
+),
+
+    path(
+    "admin/doctors/pending/",
+    PendingDoctorsAPIView.as_view(),
+    name="admin-pending-doctors",
 ),
    
 

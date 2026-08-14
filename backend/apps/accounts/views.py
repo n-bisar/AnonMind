@@ -21,6 +21,9 @@ from .services import verify_user_email
 from .serializers import DoctorLoginSerializer
 from .serializers import CurrentUserSerializer
 from .serializers import LogoutSerializer
+from .permissions import IsAdminUser
+from .serializers import PendingDoctorSerializer
+from .serializers import AdminLoginSerializer
 
 
 class PatientRegistrationAPIView(APIView):
@@ -137,6 +140,25 @@ class DoctorLoginAPIView(APIView):
             status=status.HTTP_200_OK,
         )
 
+class AdminLoginAPIView(APIView):
+
+    def post(self, request):
+        serializer = AdminLoginSerializer(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+
+        user = serializer.validated_data["user"]
+
+        refresh = RefreshToken.for_user(user)
+
+        return Response(
+            {
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+            },
+            status=status.HTTP_200_OK,
+        )
+
 class CurrentUserAPIView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -167,3 +189,19 @@ class LogoutAPIView(APIView):
             raise ValidationError(
                 {"detail": "Invalid or expired refresh token."}
             )
+
+class PendingDoctorsAPIView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        pending_doctors = User.objects.filter(
+            role=User.Role.DOCTOR,
+            verification_status=User.VerificationStatus.PENDING,
+        )
+
+        serializer = PendingDoctorSerializer(
+            pending_doctors,
+            many=True,
+        )
+
+        return Response(serializer.data)
