@@ -120,3 +120,30 @@ def send_doctor_approval_email(user):
             recipient_list=[user.email],
             fail_silently=False,
         )
+
+def send_doctor_rejection_email(user):
+
+    subject = "Doctor Application Rejected - AnonMind"
+
+    message = f"""
+        Hi {user.full_name},
+
+        Your doctor application has been rejected.
+
+        Your AnonMind doctor account cannot be used to log in
+        as a verified doctor.
+
+        If you believe this decision was made in error,
+        please contact the AnonMind administration team.
+
+        Regards,
+        AnonMind Team
+        """
+
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],
+        fail_silently=False,
+    )

@@ -26,6 +26,7 @@ from .serializers import PendingDoctorSerializer
 from .serializers import AdminLoginSerializer
 from .serializers import DoctorDetailSerializer
 from .email import send_doctor_approval_email
+from .email import send_doctor_rejection_email
 
 
 class PatientRegistrationAPIView(APIView):
@@ -251,3 +252,33 @@ class ApproveDoctorAPIView(APIView):
         },
             status=status.HTTP_200_OK,
         )
+class RejectDoctorAPIView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def patch(self, request, doctor_id):
+        doctor = get_object_or_404(
+            User,
+            id=doctor_id,
+            role=User.Role.DOCTOR,
+        )
+        if doctor.verification_status != User.VerificationStatus.PENDING:
+            return Response(
+            {
+                "message": "Only pending doctors can be rejected."
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+        doctor.verification_status = User.VerificationStatus.REJECTED
+
+        doctor.save(
+            update_fields=["verification_status"]
+        )   
+
+        send_doctor_rejection_email(doctor)
+        return Response(
+        {
+            "message": "Doctor rejected successfully."
+        },
+            status=status.HTTP_200_OK,
+        )
+    

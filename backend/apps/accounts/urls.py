@@ -13,6 +13,7 @@ from .views import (
     AdminLoginAPIView,
     DoctorDetailAPIView,
     ApproveDoctorAPIView,
+    RejectDoctorAPIView,
 )
 
 urlpatterns = [
@@ -89,6 +90,12 @@ urlpatterns = [
     "admin/doctors/<uuid:doctor_id>/approve/",
     ApproveDoctorAPIView.as_view(),
     name="admin-doctor-approve",
+),
+
+    path(
+    "admin/doctors/<uuid:doctor_id>/reject/",
+    RejectDoctorAPIView.as_view(),
+    name="admin-doctor-reject",
 ),
    
 
