@@ -472,3 +472,4 @@ The backend now has separate Admin endpoints for approving and rejecting doctors
 **Core Doctor Verification Workflow: COMPLETED ✅**
 
 **Remaining verification:** final permission-boundary tests for Patient, Doctor, and unauthenticated requests should be performed before formally closing Day 12.
+i was very late to this.
