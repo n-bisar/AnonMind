@@ -13,3 +13,16 @@ class IsAdminUser(BasePermission):
             and request.user.is_authenticated
             and request.user.role == "ADMIN"
         )
+
+class IsDoctorUser(BasePermission):
+    """
+    Allows access only to authenticated users
+    whose role is DOCTOR.
+    """
+
+    def has_permission(self, request, view):
+        return bool(
+            request.user
+            and request.user.is_authenticated
+            and request.user.role == "DOCTOR"
+        )

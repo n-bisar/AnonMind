@@ -329,3 +329,32 @@ class DoctorDetailSerializer(serializers.ModelSerializer):
             "date_joined",
             "doctor_profile",
         ]
+
+class DoctorOwnProfileSerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField(
+        source="user.full_name",
+        read_only=True,
+    )
+
+    email = serializers.EmailField(
+        source="user.email",
+        read_only=True,
+    )
+
+    verification_status = serializers.CharField(
+        source="user.verification_status",
+        read_only=True,
+    )
+
+    class Meta:
+        model = DoctorProfile
+        fields = [
+            "full_name",
+            "email",
+            "phone_number",
+            "registration_number",
+            "specialization",
+            "years_of_experience",
+            "hospital",
+            "verification_status",
+        ]
