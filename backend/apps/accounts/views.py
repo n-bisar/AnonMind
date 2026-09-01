@@ -30,7 +30,8 @@ from .email import send_doctor_rejection_email
 from .serializers import DoctorProfileSerializer
 from .serializers import DoctorOwnProfileSerializer
 from .permissions import IsDoctorUser
-
+from .serializers import PatientProfileSerializer
+from .permissions import IsPatientUser
 
 class PatientRegistrationAPIView(APIView):
 
@@ -316,4 +317,31 @@ class DoctorProfileAPIView(APIView):
             serializer.data,
             status=status.HTTP_200_OK,
     )
+
+class PatientProfileAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsPatientUser]
+
+    def get(self, request):
+        serializer = PatientProfileSerializer(request.user)
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
     
+    def patch(self, request):
+        serializer = PatientProfileSerializer(
+        request.user,
+        data=request.data,
+        partial=True,
+    )
+
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save()
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+    )

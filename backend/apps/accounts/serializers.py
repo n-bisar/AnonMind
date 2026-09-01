@@ -358,3 +358,16 @@ class DoctorOwnProfileSerializer(serializers.ModelSerializer):
             "hospital",
             "verification_status",
         ]
+
+class PatientProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "full_name",
+            "email",
+            "verification_status",
+        ]
+        read_only_fields = [
+            "email",
+            "verification_status",
+        ]
