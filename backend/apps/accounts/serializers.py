@@ -360,6 +360,15 @@ class DoctorOwnProfileSerializer(serializers.ModelSerializer):
         ]
 
 class PatientProfileSerializer(serializers.ModelSerializer):
+
+    def validate_full_name(self, value):
+        if not value.strip():
+            raise serializers.ValidationError(
+                "Full name cannot be empty."
+            )
+
+        return value.strip()
+
     class Meta:
         model = User
         fields = [
@@ -371,3 +380,5 @@ class PatientProfileSerializer(serializers.ModelSerializer):
             "email",
             "verification_status",
         ]
+
+        

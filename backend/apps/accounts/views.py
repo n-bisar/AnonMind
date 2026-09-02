@@ -14,7 +14,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 from .serializers import PatientRegistrationSerializer
 from .serializers import PatientLoginSerializer
-from .models import User
+from .models import User, DoctorDocument
 from .tokens import email_verification_token
 from .serializers import DoctorRegistrationSerializer
 from .services import verify_user_email
@@ -32,6 +32,7 @@ from .serializers import DoctorOwnProfileSerializer
 from .permissions import IsDoctorUser
 from .serializers import PatientProfileSerializer
 from .permissions import IsPatientUser
+from .serializers import DoctorDocumentSerializer
 
 class PatientRegistrationAPIView(APIView):
 
@@ -345,3 +346,25 @@ class PatientProfileAPIView(APIView):
             serializer.data,
             status=status.HTTP_200_OK,
     )
+
+class AdminDoctorDocumentsAPIView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request, doctor_id):
+        doctor = get_object_or_404(
+            User,
+            id=doctor_id,
+            role=User.Role.DOCTOR,
+    )
+
+        doctor_documents = get_object_or_404(
+            DoctorDocument,
+            doctor=doctor.doctor_profile,
+        )
+
+        serializer = DoctorDocumentSerializer(doctor_documents)
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )

@@ -16,6 +16,7 @@ from .views import (
     RejectDoctorAPIView,
     DoctorProfileAPIView,
     PatientProfileAPIView,
+    AdminDoctorDocumentsAPIView,
 )
 
 urlpatterns = [
@@ -111,6 +112,10 @@ urlpatterns = [
     PatientProfileAPIView.as_view(),
     name="patient-profile",
 ),
-   
+   path(
+    "admin/doctors/<uuid:doctor_id>/documents/",
+    AdminDoctorDocumentsAPIView.as_view(),
+    name="admin-doctor-documents",
+),
 
 ]
