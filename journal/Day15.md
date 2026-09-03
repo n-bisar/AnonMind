@@ -328,7 +328,7 @@ Because doctors are identified by UUIDs, the URL uses:
 Phase 2 Progress
 Phase 2 — Core Backend APIs
 Day 11 — User/Profile APIs
-Day 12 — Admin Pending Doctors API
+Day 12 — Admin Pending Doctors API endpoint
 Day 13 — Doctor Profile API
 Day 14 — Patient Profile API
 Day 15 — Admin View Doctor Documents API ✅
