@@ -97,29 +97,7 @@ def send_doctor_verification_email(user):
         fail_silently=False,
 )
 
-def send_doctor_approval_email(user):
 
-        subject = "Doctor Application Approved - AnonMind"
-
-        message = f"""
-        Hi {user.full_name},
-
-        Your doctor application has been approved.
-
-        Your AnonMind doctor account has been verified successfully.
-        You can now log in to your account.
-
-        Regards,
-        AnonMind Team
-        """
-
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[user.email],
-            fail_silently=False,
-        )
 
 def send_doctor_rejection_email(user):
 

@@ -25,7 +25,7 @@ from .permissions import IsAdminUser
 from .serializers import PendingDoctorSerializer
 from .serializers import AdminLoginSerializer
 from .serializers import DoctorDetailSerializer
-from .email import send_doctor_approval_email
+from .email import send_doctor_verification_email
 from .email import send_doctor_rejection_email
 from .serializers import DoctorProfileSerializer
 from .serializers import DoctorOwnProfileSerializer
@@ -118,9 +118,7 @@ class DoctorRegistrationAPIView(APIView):
             return Response(
             {
                 "message": (
-                    "Doctor registered successfully. "
-                    "Please verify your email. "
-                    "Your account will be activated after admin verification."
+                    "Registration successful. Your application is now pending admin verification."
                 )
             },
             status=status.HTTP_201_CREATED,
@@ -250,7 +248,7 @@ class ApproveDoctorAPIView(APIView):
         doctor.save(
             update_fields=["verification_status"]
         )
-        send_doctor_approval_email(doctor)
+        send_doctor_verification_email(doctor)
         return Response(
         {
             "message": "Doctor approved successfully."

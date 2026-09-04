@@ -188,7 +188,6 @@ class DoctorRegistrationSerializer(serializers.Serializer):
                 profile_photo=profile_photo,
             )
         
-            send_doctor_verification_email(user)
             return user
 
 class DoctorLoginSerializer(serializers.Serializer):
