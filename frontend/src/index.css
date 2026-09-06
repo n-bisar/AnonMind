@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #f8fbfa;
+  --surface: #ffffff;
+
+  --text: #102a43;
+  --text-muted: #627d98;
+
+  --primary: #159a8a;
+  --primary-dark: #0f766e;
+
+  --border: #d9e5e2;
+}
+
+.dark {
+  --background: #0f1f2e;
+  --surface: #162b3d;
+
+  --text: #f1f7f6;
+  --text-muted: #a9bdc5;
+
+  --primary: #35b8a5;
+  --primary-dark: #2a9586;
+
+  --border: #294354;
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+
+  --color-border: var(--border);
+}
+
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #f8fbfa;
+  --surface: #ffffff;
+
+  --text: #102a43;
+  --text-muted: #627d98;
+
+  --primary: #159a8a;
+  --primary-dark: #0f766e;
+
+  --border: #d9e5e2;
+}
+
+.dark {
+  --background: #0f1f2e;
+  --surface: #162b3d;
+
+  --text: #f1f7f6;
+  --text-muted: #a9bdc5;
+
+  --primary: #35b8a5;
+  --primary-dark: #2a9586;
+
+  --border: #294354;
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+
+  --color-border: var(--border);
+}
