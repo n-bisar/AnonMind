@@ -12,6 +12,8 @@ export function ThemeProvider({ children }) {
       "dark",
       theme === "dark"
     );
+
+    localStorage.setItem("theme", theme);
   }, [theme]);
 
   return (
