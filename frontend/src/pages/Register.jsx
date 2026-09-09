@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import api from "../api/axios";
 
 
 
@@ -12,14 +13,22 @@ function Register() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const passwordsMatch = password === confirmPassword;
-    const handleSubmit = (event) => {
+    const handleSubmit = async(event) => {
   event.preventDefault();
 
-  console.log("Role:", role);
-  console.log("Full Name:", fullName);
-  console.log("Email:", email);
-  console.log("Password:", password);
-  console.log("Confirm Password:", confirmPassword);
+  const data = {
+  full_name: fullName,
+  email: email,
+  password: password,
+  confirm_password: confirmPassword,
+};
+try {
+  const response = await api.post("/api/patient/register/", data);
+
+  console.log("Registration response:", response);
+} catch (error) {
+  console.log("Registration error:", error.response?.data);
+}
 };
   return (
     <div className="min-h-screen bg-background px-6 py-12">
