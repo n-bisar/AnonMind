@@ -179,6 +179,7 @@ function Register() {
     </p>
   </div>
 </div>
+
         </div>
 
         {/* Right Section */}
