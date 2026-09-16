@@ -1,9 +1,11 @@
 import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ThemeContext from "../context/ThemeContext";
 import Button from "./Button";
 import logo from "../assets/logo.png";
 
 function Navbar() {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { theme, setTheme } = useContext(ThemeContext);
@@ -95,9 +97,9 @@ function Navbar() {
               Login
             </Button>
 
-            <Button>
-              Get Started
-            </Button>
+            <Button onClick={() => navigate("/register")}>
+  Get Started
+    </Button>
           </div>
 
         </div>

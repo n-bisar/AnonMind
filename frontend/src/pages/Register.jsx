@@ -1,4 +1,8 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import ThemeContext from "../context/ThemeContext";
+import lightBackground from "../assets/register-light.png";
+import darkBackground from "../assets/register-dark.png";
+
 import {
   Eye,
   EyeOff,
@@ -6,10 +10,14 @@ import {
   LockKeyhole,
   Heart,
   Users,
+  Moon,
+  Sun,
 } from "lucide-react";
 import api from "../api/axios";
+import logo from "../assets/logo.png";
 
 function Register() {
+  const { theme, setTheme } = useContext(ThemeContext);
   const [role, setRole] = useState("patient");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -41,14 +49,56 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-background px-6 py-6 lg:h-screen">
+    <div className="relative min-h-screen overflow-hidden bg-background px-6 py-8">
+      <div
+  className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+  style={{
+    backgroundImage: `url(${theme === "light" ? lightBackground : darkBackground})`,
+  }}
+/>
   
-  <div className="mx-auto flex h-12 max-w-7xl items-center justify-end">
+  <div className="relative z-10 mx-auto flex h-12 max-w-7xl items-center justify-between">
+    <div className="flex items-center gap-3">
+  <img
+    src={logo}
+    alt="AnonMind"
+    className="h-10 w-auto object-contain"
+  />
+
+  <span className="text-2xl font-bold text-text">
+    AnonMind
+  </span>
+</div>
     <div className="flex items-center gap-4">
-    </div>
+  <span className="text-sm text-text-muted">
+    Already have an account?
+  </span>
+
+  <button
+    type="button"
+    className="text-sm font-medium text-primary transition hover:opacity-80"
+  >
+    Login
+  </button>
+
+  <button
+  type="button"
+  onClick={() =>
+    setTheme(theme === "light" ? "dark" : "light")
+  }
+  className="flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-surface text-text transition-colors hover:bg-background"
+  aria-label="Toggle dark mode"
+>
+  {theme === "light" ? (
+    <Moon className="h-5 w-5" />
+  ) : (
+    <Sun className="h-5 w-5" />
+  )}
+</button>
+</div>
   </div>
 
-  <div className="mx-auto mt-4 grid max-w-7xl grid-cols-1 gap-12 lg:grid-cols-2">
+  <div className="relative z-10 mx-auto mt-2 grid max-w-7xl grid-cols-1 items-center gap-12 lg:grid-cols-2">
 
         {/* Success Modal */}
         {registrationSuccess && (
@@ -134,7 +184,7 @@ function Register() {
         {/* Right Section */}
         <div className="lg:col-start-2">
          <div className="mx-auto flex w-full max-w-lg items-center justify-center">
-            <div className="w-full max-w-lg rounded-2xl border border-border bg-surface px-5 py-5 shadow-sm">
+            <div className="w-full max-w-lg rounded-2xl border border-border bg-surface px-5 py-4 shadow-sm">
               <div className="text-center">
 
                 <h1 className="text-3xl font-bold text-text">
@@ -182,7 +232,7 @@ function Register() {
                   <form className="mt-6" onSubmit={handleSubmit}>
 
                     
-                    <label className="mt-5 block text-left">
+                    <label className="mt-4 block text-left">
                       <span className="text-sm font-medium text-text">
                         Full Name
                       </span>
@@ -306,7 +356,17 @@ function Register() {
                     >
                       Create Account
                     </button>
-
+                      <p className="mt-4 text-center text-xs leading-5 text-text-muted">
+  By creating an account, you agree to our{" "}
+  <span className="text-primary underline underline-offset-2">
+    Terms of Service
+  </span>{" "}
+  and{" "}
+  <span className="text-primary underline underline-offset-2">
+    Privacy Policy
+  </span>
+  .
+</p>
                   </form>
                 )}
 

@@ -2,6 +2,7 @@ import Button from "../components/Button";
 import Navbar from "../components/Navbar";
 import heroImage from "../assets/hero.png";
 import ctaBackground from "../assets/cta-background.png.png";
+import { useNavigate } from "react-router-dom";
 
 import {
   ShieldCheck,
@@ -14,6 +15,7 @@ import {
 } from "lucide-react";
 
 function Home() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -38,10 +40,9 @@ environment designed around you.
     </p>
 
     <div className="mt-8 flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:justify-start">
-      <Button >
-        Get Started
-      </Button>
-
+      <Button onClick={() => navigate("/register")}>
+  Get Started
+    </Button>
       <Button variant="secondary">
         Learn More
       </Button>

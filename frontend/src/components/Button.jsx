@@ -1,4 +1,4 @@
-function Button({ children, variant = "primary", className = "" }) {
+function Button({ children, variant = "primary", className = "",onClick }) {
   const baseStyles =
     "inline-flex items-center justify-center rounded-lg px-5 py-2.5 font-medium transition-colors duration-200";
 
@@ -8,7 +8,10 @@ function Button({ children, variant = "primary", className = "" }) {
   };
 
   return (
-    <button className={`${baseStyles} ${variants[variant]} ${className}`}>
+    <button
+  onClick={onClick}
+  className={`${baseStyles} ${variants[variant]} ${className}`}
+>
       {children}
     </button>
   );
