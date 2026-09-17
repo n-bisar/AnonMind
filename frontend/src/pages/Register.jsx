@@ -26,11 +26,22 @@ function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [formError, setFormError] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+const [registrationNumber, setRegistrationNumber] = useState("");
+const [specialization, setSpecialization] = useState("");
+const [yearsOfExperience, setYearsOfExperience] = useState("");
+const [hospital, setHospital] = useState("");
 
   const passwordsMatch = password === confirmPassword;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!fullName || !email || !password || !confirmPassword) {
+  setFormError("Please fill in all required fields.");
+  return;
+}
 
     const data = {
       full_name: fullName,
@@ -189,8 +200,8 @@ function Register() {
               <div className="text-center">
 
                 <h1 className="text-3xl font-bold text-text">
-                  Create Your Account
-                </h1>
+  {role === "patient" ? "Create Your Account" : "Doctor Registration"}
+</h1>
 
                 <p className="mt-3 text-sm leading-6 text-text-muted">
                   Join AnonMind and take the first step toward better mental
@@ -350,6 +361,11 @@ function Register() {
                         Passwords do not match.
                       </p>
                     )}
+                    {formError && (
+  <p className="mt-2 text-sm text-red-500">
+    {formError}
+  </p>
+)}
 
                     <button
                       type="submit"
@@ -370,6 +386,13 @@ function Register() {
 </p>
                   </form>
                 )}
+                {role === "doctor" && (
+  <div className="mt-6 text-center">
+    <p className="text-text-muted">
+      Doctor registration form coming next.
+    </p>
+  </div>
+)}
 
               </div>
             </div>
