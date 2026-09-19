@@ -32,6 +32,10 @@ const [registrationNumber, setRegistrationNumber] = useState("");
 const [specialization, setSpecialization] = useState("");
 const [yearsOfExperience, setYearsOfExperience] = useState("");
 const [hospital, setHospital] = useState("");
+const [medicalDegree, setMedicalDegree] = useState(null);
+const [medicalLicense, setMedicalLicense] = useState(null);
+const [governmentId, setGovernmentId] = useState(null);
+const [profilePhoto, setProfilePhoto] = useState(null);
 
   const passwordsMatch = password === confirmPassword;
 
@@ -388,9 +392,215 @@ const [hospital, setHospital] = useState("");
                 )}
                 {role === "doctor" && (
   <div className="mt-6 text-center">
-    <p className="text-text-muted">
-      Doctor registration form coming next.
-    </p>
+    <div className="mt-6">
+  <label className="block text-left">
+    <span className="text-sm font-medium text-text">
+      Full Name
+    </span>
+
+    <input
+      type="text"
+      placeholder="Enter your full name"
+      value={fullName}
+      onChange={(event) => setFullName(event.target.value)}
+      className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text outline-none transition focus:border-primary"
+    />
+  </label>
+
+  <label className="mt-5 block text-left">
+    <span className="text-sm font-medium text-text">
+      Email Address
+    </span>
+
+    <input
+      type="email"
+      placeholder="you@example.com"
+      value={email}
+      onChange={(event) => setEmail(event.target.value)}
+      className="mt-5 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text outline-none transition focus:border-primary"
+    />
+  </label>
+  <label className="mt-5 block text-left">
+  <span className="text-sm font-medium text-text">
+    Password
+  </span>
+
+  <div className="relative mt-2">
+    <input
+      type={showPassword ? "text" : "password"}
+      placeholder="Create a password"
+      value={password}
+      onChange={(event) => setPassword(event.target.value)}
+      className="w-full rounded-xl border border-border bg-background px-4 py-3 pr-12 text-sm text-text outline-none transition focus:border-primary"
+    />
+
+    <button
+      type="button"
+      onClick={() => setShowPassword(!showPassword)}
+      className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted transition hover:text-primary"
+      aria-label={showPassword ? "Hide password" : "Show password"}
+    >
+      {showPassword ? (
+        <EyeOff className="h-5 w-5" />
+      ) : (
+        <Eye className="h-5 w-5" />
+      )}
+    </button>
+  </div>
+</label>
+
+<label className="mt-5 block text-left">
+  <span className="text-sm font-medium text-text">
+    Confirm Password
+  </span>
+
+  <div className="relative mt-2">
+    <input
+      type={showConfirmPassword ? "text" : "password"}
+      placeholder="Confirm your password"
+      value={confirmPassword}
+      onChange={(event) => setConfirmPassword(event.target.value)}
+      className="w-full rounded-xl border border-border bg-background px-4 py-3 pr-12 text-sm text-text outline-none transition focus:border-primary"
+    />
+
+    <button
+      type="button"
+      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+      className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted transition hover:text-primary"
+      aria-label={
+        showConfirmPassword
+          ? "Hide confirm password"
+          : "Show confirm password"
+      }
+    >
+      {showConfirmPassword ? (
+        <EyeOff className="h-5 w-5" />
+      ) : (
+        <Eye className="h-5 w-5" />
+      )}
+    </button>
+  </div>
+</label>
+{confirmPassword && !passwordsMatch && (
+  <p className="mt-2 text-sm text-red-500">
+    Passwords do not match.
+  </p>
+)}
+<label className="mt-5 block text-left">
+  <span className="text-sm font-medium text-text">
+    Phone Number
+  </span>
+
+  <input
+    type="tel"
+    placeholder="Enter your phone number"
+    value={phoneNumber}
+    onChange={(event) => setPhoneNumber(event.target.value)}
+    className="mt-5 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text outline-none transition focus:border-primary"
+  />
+</label>
+<label className="mt-5 block text-left">
+  <span className="text-sm font-medium text-text">
+    Medical Registration Number
+  </span>
+
+  <input
+    type="text"
+    placeholder="Enter your registration number"
+    value={registrationNumber}
+    onChange={(event) => setRegistrationNumber(event.target.value)}
+    className="mt-5 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text outline-none transition focus:border-primary"
+  />
+</label>
+<label className="mt-5 block text-left">
+  <span className="text-sm font-medium text-text">
+    Specialization
+  </span>
+
+  <input
+    type="text"
+    placeholder="e.g. Psychiatry, Psychology, General Medicine"
+    value={specialization}
+    onChange={(event) => setSpecialization(event.target.value)}
+    className="mt-5 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text outline-none transition focus:border-primary"
+  />
+</label>
+<label className="mt-5 block text-left">
+  <span className="text-sm font-medium text-text">
+    Years of Experience
+  </span>
+
+  <input
+    type="number"
+    min="0"
+    placeholder="Enter years of experience"
+    value={yearsOfExperience}
+    onChange={(event) => setYearsOfExperience(event.target.value)}
+    className="mt-5 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text outline-none transition focus:border-primary"
+  />
+</label>
+<label className="mt-5 block text-left">
+  <span className="text-sm font-medium text-text">
+    Hospital / Workplace
+  </span>
+
+  <input
+    type="text"
+    placeholder="Enter your hospital or workplace"
+    value={hospital}
+    onChange={(event) => setHospital(event.target.value)}
+    className="mt-5 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text outline-none transition focus:border-primary"
+  />
+</label>
+<label className="mt-5 block text-left">
+  <span className="text-sm font-medium text-text">
+    Medical Degree
+  </span>
+
+  <input
+    type="file"
+    accept=".pdf,.jpg,.jpeg,.png"
+    onChange={(event) => setMedicalDegree(event.target.files[0])}
+    className="mt-2 block w-full text-sm text-text-muted file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:opacity-90"
+  />
+</label>
+<label className="mt-5 block text-left">
+  <span className="text-sm font-medium text-text">
+    Medical License
+  </span>
+
+  <input
+    type="file"
+    accept=".pdf,.jpg,.jpeg,.png"
+    onChange={(event) => setMedicalLicense(event.target.files[0])}
+    className="mt-2 block w-full text-sm text-text-muted file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:opacity-90"
+  />
+</label>
+<label className="mt-5 block text-left">
+  <span className="text-sm font-medium text-text">
+    Government ID
+  </span>
+
+  <input
+    type="file"
+    accept=".pdf,.jpg,.jpeg,.png"
+    onChange={(event) => setGovernmentId(event.target.files[0])}
+    className="mt-2 block w-full text-sm text-text-muted file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:opacity-90"
+  />
+</label>
+<label className="mt-5 block text-left">
+  <span className="text-sm font-medium text-text">
+    Profile Photo
+  </span>
+
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(event) => setProfilePhoto(event.target.files[0])}
+    className="mt-2 block w-full text-sm text-text-muted file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:opacity-90"
+  />
+</label>
+</div>
   </div>
 )}
 
