@@ -36,6 +36,8 @@ const [medicalDegree, setMedicalDegree] = useState(null);
 const [medicalLicense, setMedicalLicense] = useState(null);
 const [governmentId, setGovernmentId] = useState(null);
 const [profilePhoto, setProfilePhoto] = useState(null);
+const [registrationSuccessMessage, setRegistrationSuccessMessage] = useState("");
+const [doctorStep, setDoctorStep] = useState(1);
 
   const passwordsMatch = password === confirmPassword;
 
@@ -63,10 +65,40 @@ const [profilePhoto, setProfilePhoto] = useState(null);
     }
   };
 
+  const handleDoctorSubmit = async (event) => {
+  event.preventDefault();
+const formData = new FormData();
+formData.append("full_name", fullName);
+formData.append("email", email);
+formData.append("password", password);
+formData.append("confirm_password", confirmPassword);
+formData.append("phone_number", phoneNumber);
+formData.append("registration_number", registrationNumber);
+formData.append("specialization", specialization);
+formData.append("years_of_experience", yearsOfExperience);
+formData.append("hospital", hospital);
+formData.append("medical_degree", medicalDegree);
+formData.append("medical_license", medicalLicense);
+formData.append("government_id", governmentId);
+formData.append("profile_photo", profilePhoto);
+
+try {
+  await api.post("/api/doctor/register/", formData);
+
+  setRegistrationSuccessMessage(
+  "Your registration has been submitted successfully. Your application is now pending admin verification."
+);
+setRegistrationSuccess(true);
+} catch (error) {
+  console.log("Doctor registration error:", error.response?.data);
+}
+  
+};
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-background px-6 py-8">
       <div
-  className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+  className="fixed inset-0 bg-cover bg-center bg-no-repeat"
   style={{
     backgroundImage: `url(${theme === "light" ? lightBackground : darkBackground})`,
   }}
@@ -113,7 +145,7 @@ const [profilePhoto, setProfilePhoto] = useState(null);
 </div>
   </div>
 
-  <div className="relative z-10 mx-auto mt-2 grid max-w-7xl grid-cols-1 items-center gap-12 lg:grid-cols-2">
+  <div className="relative z-10 mx-auto mt-2 grid max-w-7xl grid-cols-1 items-stretch gap-12 lg:grid-cols-2">
 
         {/* Success Modal */}
         {registrationSuccess && (
@@ -126,7 +158,7 @@ const [profilePhoto, setProfilePhoto] = useState(null);
               </h2>
 
               <p className="mt-3 text-text-secondary">
-                Please check your email to verify your account before logging in.
+                {registrationSuccessMessage}
               </p>
 
               <button
@@ -141,7 +173,7 @@ const [profilePhoto, setProfilePhoto] = useState(null);
         )}
 
         {/* Left Section */}
-        <div className="hidden lg:flex lg:flex-col lg:justify-center">
+        <div className="hidden lg:flex lg:flex-col lg:justify-start lg:pt-32">
           <h1 className="max-w-xl text-5xl font-bold leading-tight text-text">
   A Safer Space for a Healthier You
 </h1>
@@ -204,9 +236,45 @@ const [profilePhoto, setProfilePhoto] = useState(null);
               <div className="text-center">
 
                 <h1 className="text-3xl font-bold text-text">
-  {role === "patient" ? "Create Your Account" : "Doctor Registration"}
+  {role === "patient" ? "Create Your Account" : "Create Your Account"}
 </h1>
+                {role === "doctor" && (
+  <div className="mt-6 flex items-center justify-center gap-3 text-sm">
+    <span
+      className={
+        doctorStep >= 1
+          ? "font-semibold text-primary"
+          : "text-text-muted"
+      }
+    >
+      1. Account
+    </span>
 
+    <span className="text-text-muted">—</span>
+
+    <span
+      className={
+        doctorStep >= 2
+          ? "font-semibold text-primary"
+          : "text-text-muted"
+      }
+    >
+      2. Professional
+    </span>
+
+    <span className="text-text-muted">—</span>
+
+    <span
+      className={
+        doctorStep >= 3
+          ? "font-semibold text-primary"
+          : "text-text-muted"
+      }
+    >
+      3. Verification
+    </span>
+  </div>
+)}
                 <p className="mt-3 text-sm leading-6 text-text-muted">
                   Join AnonMind and take the first step toward better mental
                   well-being.
@@ -392,8 +460,17 @@ const [profilePhoto, setProfilePhoto] = useState(null);
                 )}
                 {role === "doctor" && (
   <div className="mt-6 text-center">
-    <div className="mt-6">
+    <form
+  className="mt-6"
+  onSubmit={handleDoctorSubmit}
+>
+
+  {doctorStep === 1 && (
+    <>
   <label className="block text-left">
+    
+  
+
     <span className="text-sm font-medium text-text">
       Full Name
     </span>
@@ -406,6 +483,7 @@ const [profilePhoto, setProfilePhoto] = useState(null);
       className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text outline-none transition focus:border-primary"
     />
   </label>
+  
 
   <label className="mt-5 block text-left">
     <span className="text-sm font-medium text-text">
@@ -485,7 +563,12 @@ const [profilePhoto, setProfilePhoto] = useState(null);
   <p className="mt-2 text-sm text-red-500">
     Passwords do not match.
   </p>
-)}
+)} 
+</>
+  )}
+  
+  {doctorStep === 2 && (
+  <>
 <label className="mt-5 block text-left">
   <span className="text-sm font-medium text-text">
     Phone Number
@@ -552,6 +635,11 @@ const [profilePhoto, setProfilePhoto] = useState(null);
     className="mt-5 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text outline-none transition focus:border-primary"
   />
 </label>
+</>
+  )}
+
+  {doctorStep === 3 && (
+  <>
 <label className="mt-5 block text-left">
   <span className="text-sm font-medium text-text">
     Medical Degree
@@ -600,7 +688,57 @@ const [profilePhoto, setProfilePhoto] = useState(null);
     className="mt-2 block w-full text-sm text-text-muted file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:opacity-90"
   />
 </label>
-</div>
+</>
+  )}
+{doctorStep === 1 && (
+  <button
+    type="button"
+    onClick={() => setDoctorStep(2)}
+    className="mt-6 w-full rounded-xl bg-primary py-3 font-semibold text-white transition hover:opacity-90"
+  >
+    Continue
+  </button>
+)}
+
+{doctorStep === 2 && (
+  <div className="mt-6 flex gap-3">
+    <button
+      type="button"
+      onClick={() => setDoctorStep(1)}
+      className="flex-1 rounded-xl bg-primary py-3 font-semibold text-white transition hover:opacity-90"
+    >
+      Back
+    </button>
+
+    <button
+      type="button"
+      onClick={() => setDoctorStep(3)}
+      className="flex-1 rounded-xl bg-primary py-3 font-semibold text-white transition hover:opacity-90"
+    >
+      Continue
+    </button>
+    
+  </div>
+)}
+{doctorStep === 3 && (
+  <div className="mt-6 flex gap-3">
+    <button
+      type="button"
+      onClick={() => setDoctorStep(2)}
+      className="flex-1 rounded-xl bg-primary py-3 font-semibold text-white transition hover:opacity-90"
+    >
+      Back
+    </button>
+
+    <button
+      type="submit"
+      className="flex-1 rounded-xl bg-primary py-3 font-semibold text-white transition hover:opacity-90"
+    >
+      Submit Application
+    </button>
+  </div>
+)}
+</form>
   </div>
 )}
 
