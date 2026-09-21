@@ -564,6 +564,11 @@ setRegistrationSuccess(true);
     Passwords do not match.
   </p>
 )} 
+{formError && (
+  <p className="mt-2 text-sm text-red-500">
+    {formError}
+  </p>
+)}
 </>
   )}
   
@@ -692,12 +697,25 @@ setRegistrationSuccess(true);
   )}
 {doctorStep === 1 && (
   <button
-    type="button"
-    onClick={() => setDoctorStep(2)}
-    className="mt-6 w-full rounded-xl bg-primary py-3 font-semibold text-white transition hover:opacity-90"
-  >
-    Continue
-  </button>
+  type="button"
+  onClick={() => {
+  if (!fullName || !email || !password || !confirmPassword) {
+    setFormError("Please fill in all required fields.");
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    setFormError("Passwords do not match.");
+    return;
+  }
+
+  setFormError("");
+  setDoctorStep(2);
+}}
+  className="mt-6 w-full rounded-xl bg-primary py-3 font-semibold text-white transition hover:opacity-90"
+>
+  Continue
+</button>
 )}
 
 {doctorStep === 2 && (
@@ -712,7 +730,21 @@ setRegistrationSuccess(true);
 
     <button
       type="button"
-      onClick={() => setDoctorStep(3)}
+      onClick={() => {
+  if (
+    !phoneNumber ||
+    !registrationNumber ||
+    !specialization ||
+    !yearsOfExperience ||
+    !hospital
+  ) {
+    setFormError("Please fill in all required fields.");
+    return;
+  }
+
+  setFormError("");
+  setDoctorStep(3);
+}}
       className="flex-1 rounded-xl bg-primary py-3 font-semibold text-white transition hover:opacity-90"
     >
       Continue
