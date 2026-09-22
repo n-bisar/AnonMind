@@ -48,7 +48,10 @@ const [doctorStep, setDoctorStep] = useState(1);
   setFormError("Please fill in all required fields.");
   return;
 }
-
+    if (password.length < 8) {
+  setFormError("Password must be at least 8 characters.");
+  return;
+}
     const data = {
       full_name: fullName,
       email: email,
@@ -67,6 +70,10 @@ const [doctorStep, setDoctorStep] = useState(1);
 
   const handleDoctorSubmit = async (event) => {
   event.preventDefault();
+  if (!medicalDegree || !medicalLicense || !governmentId || !profilePhoto) {
+  setFormError("Please upload all required documents.");
+  return;
+}
 const formData = new FormData();
 formData.append("full_name", fullName);
 formData.append("email", email);
@@ -288,7 +295,11 @@ setRegistrationSuccess(true);
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       type="button"
-                      onClick={() => setRole("patient")}
+                      onClick={() => {
+  setRole("patient");
+  setFormError("");
+  setDoctorStep(1);
+}}
                       className={`rounded-xl border px-4 py-3 text-sm font-medium transition ${
                         role === "patient"
                           ? "border-primary bg-primary/10 text-primary"
@@ -300,7 +311,11 @@ setRegistrationSuccess(true);
 
                     <button
                       type="button"
-                      onClick={() => setRole("doctor")}
+                      onClick={() => {
+  setRole("doctor");
+  setFormError("");
+  setDoctorStep(1);
+}}
                       className={`rounded-xl border px-4 py-3 text-sm font-medium transition ${
                         role === "doctor"
                           ? "border-primary bg-primary/10 text-primary"
@@ -383,6 +398,10 @@ setRegistrationSuccess(true);
                           )}
                         </button>
                       </div>
+                      <p className="mt-2 text-xs text-text-muted">
+  Password must be at least 8 characters.
+</p>
+                      
                     </label>
 
                     <label className="mt-5 block text-left">
@@ -525,6 +544,9 @@ setRegistrationSuccess(true);
       )}
     </button>
   </div>
+  <p className="mt-2 text-xs text-text-muted">
+  Password must be at least 8 characters.
+</p>
 </label>
 
 <label className="mt-5 block text-left">
@@ -653,9 +675,33 @@ setRegistrationSuccess(true);
   <input
     type="file"
     accept=".pdf,.jpg,.jpeg,.png"
-    onChange={(event) => setMedicalDegree(event.target.files[0])}
+    onChange={(event) => {
+  const file = event.target.files[0];
+
+  if (!file) return;
+
+  const allowedTypes = [
+    "application/pdf",
+    "image/jpeg",
+    "image/png",
+  ];
+
+  if (!allowedTypes.includes(file.type)) {
+    setFormError("Medical Degree must be a PDF, JPG, or PNG file.");
+    setMedicalDegree(null);
+    return;
+  }
+
+  setFormError("");
+  setMedicalDegree(file);
+}}
     className="mt-2 block w-full text-sm text-text-muted file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:opacity-90"
   />
+  {medicalDegree && (
+  <p className="mt-2 text-xs text-text-muted">
+    Selected: {medicalDegree.name}
+  </p>
+)}
 </label>
 <label className="mt-5 block text-left">
   <span className="text-sm font-medium text-text">
@@ -665,9 +711,33 @@ setRegistrationSuccess(true);
   <input
     type="file"
     accept=".pdf,.jpg,.jpeg,.png"
-    onChange={(event) => setMedicalLicense(event.target.files[0])}
+    onChange={(event) => {
+  const file = event.target.files[0];
+
+  if (!file) return;
+
+  const allowedTypes = [
+    "application/pdf",
+    "image/jpeg",
+    "image/png",
+  ];
+
+  if (!allowedTypes.includes(file.type)) {
+    setFormError("Medical License must be a PDF, JPG, or PNG file.");
+    setMedicalLicense(null);
+    return;
+  }
+
+  setFormError("");
+  setMedicalLicense(file);
+}}
     className="mt-2 block w-full text-sm text-text-muted file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:opacity-90"
   />
+  {medicalLicense && (
+  <p className="mt-2 text-xs text-text-muted">
+    Selected: {medicalLicense.name}
+  </p>
+)}
 </label>
 <label className="mt-5 block text-left">
   <span className="text-sm font-medium text-text">
@@ -677,9 +747,33 @@ setRegistrationSuccess(true);
   <input
     type="file"
     accept=".pdf,.jpg,.jpeg,.png"
-    onChange={(event) => setGovernmentId(event.target.files[0])}
+    onChange={(event) => {
+  const file = event.target.files[0];
+
+  if (!file) return;
+
+  const allowedTypes = [
+    "application/pdf",
+    "image/jpeg",
+    "image/png",
+  ];
+
+  if (!allowedTypes.includes(file.type)) {
+    setFormError("Government ID must be a PDF, JPG, or PNG file.");
+    setGovernmentId(null);
+    return;
+  }
+
+  setFormError("");
+  setGovernmentId(file);
+}}
     className="mt-2 block w-full text-sm text-text-muted file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:opacity-90"
   />
+  {governmentId && (
+  <p className="mt-2 text-xs text-text-muted">
+    Selected: {governmentId.name}
+  </p>
+)}
 </label>
 <label className="mt-5 block text-left">
   <span className="text-sm font-medium text-text">
@@ -689,9 +783,32 @@ setRegistrationSuccess(true);
   <input
     type="file"
     accept="image/*"
-    onChange={(event) => setProfilePhoto(event.target.files[0])}
+    onChange={(event) => {
+  const file = event.target.files[0];
+
+  if (!file) return;
+
+  const allowedTypes = [
+    "image/jpeg",
+    "image/png",
+  ];
+
+  if (!allowedTypes.includes(file.type)) {
+    setFormError("Profile Photo must be a JPG or PNG image.");
+    setProfilePhoto(null);
+    return;
+  }
+
+  setFormError("");
+  setProfilePhoto(file);
+}}
     className="mt-2 block w-full text-sm text-text-muted file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:opacity-90"
   />
+  {profilePhoto && (
+  <p className="mt-2 text-xs text-text-muted">
+    Selected: {profilePhoto.name}
+  </p>
+)}
 </label>
 </>
   )}
@@ -704,6 +821,10 @@ setRegistrationSuccess(true);
     return;
   }
 
+  if (password.length < 8) {
+  setFormError("Password must be at least 8 characters.");
+  return;
+}
   if (password !== confirmPassword) {
     setFormError("Passwords do not match.");
     return;
@@ -719,6 +840,13 @@ setRegistrationSuccess(true);
 )}
 
 {doctorStep === 2 && (
+  <>
+  {formError && (
+  <p className="mt-2 text-sm text-red-500">
+  {formError}
+  </p>
+  )}
+  
   <div className="mt-6 flex gap-3">
     <button
       type="button"
@@ -742,17 +870,29 @@ setRegistrationSuccess(true);
     return;
   }
 
+  
   setFormError("");
   setDoctorStep(3);
 }}
-      className="flex-1 rounded-xl bg-primary py-3 font-semibold text-white transition hover:opacity-90"
+className="flex-1 rounded-xl bg-primary py-3 font-semibold text-white transition hover:opacity-90"
     >
       Continue
     </button>
-    
   </div>
+  </>
+  
 )}
 {doctorStep === 3 && (
+  <>
+  <p className="mb-4 text-left text-xs leading-5 text-text-muted">
+  Upload your verification documents in PDF, JPG, or PNG format.
+</p>
+  {formError && (
+  <p className="mt-2 text-sm text-red-500">
+    {formError}
+  </p>
+)}
+  
   <div className="mt-6 flex gap-3">
     <button
       type="button"
@@ -769,6 +909,7 @@ setRegistrationSuccess(true);
       Submit Application
     </button>
   </div>
+  </>
 )}
 </form>
   </div>
