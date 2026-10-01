@@ -93,7 +93,7 @@ function Navbar() {
 
           {/* Desktop Authentication Buttons */}
           <div className="hidden items-center gap-3 md:flex">
-            <Button variant="secondary">
+            <Button variant="secondary" onClick={() => navigate("/login")}>
               Login
             </Button>
 

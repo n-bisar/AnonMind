@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import ThemeContext from "../context/ThemeContext";
 import lightBackground from "../assets/register-light.png";
 import darkBackground from "../assets/register-dark.png";
+import { useNavigate } from "react-router-dom";
 
 import {
   Eye,
@@ -38,6 +39,7 @@ const [governmentId, setGovernmentId] = useState(null);
 const [profilePhoto, setProfilePhoto] = useState(null);
 const [registrationSuccessMessage, setRegistrationSuccessMessage] = useState("");
 const [doctorStep, setDoctorStep] = useState(1);
+const navigate = useNavigate();
 
   const passwordsMatch = password === confirmPassword;
 
@@ -64,8 +66,14 @@ const [doctorStep, setDoctorStep] = useState(1);
 
       setRegistrationSuccess(true);
     } catch (error) {
-      console.log("Registration error:", error.response?.data);
-    }
+  console.log("Registration error:", error.response?.data);
+
+  const message =
+    error.response?.data?.email?.[0] ||
+    "Registration failed. Please try again.";
+
+  setFormError(message);
+}
   };
 
   const handleDoctorSubmit = async (event) => {
@@ -98,6 +106,12 @@ try {
 setRegistrationSuccess(true);
 } catch (error) {
   console.log("Doctor registration error:", error.response?.data);
+
+  const message =
+    error.response?.data?.email?.[0] ||
+    "Registration failed. Please try again.";
+
+  setFormError(message);
 }
   
 };
@@ -130,7 +144,7 @@ setRegistrationSuccess(true);
 
   <button
     type="button"
-    className="text-sm font-medium text-primary transition hover:opacity-80"
+    className="text-sm font-medium text-primary transition hover:opacity-80" onClick={() => navigate("/login")}
   >
     Login
   </button>

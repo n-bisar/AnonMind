@@ -171,9 +171,12 @@ environment designed around you.
       </p>
     </div>
 
-    <Button className="shrink-0 px-5 py-2 text-sm">
-      Get Started
-    </Button>
+    <Button
+  onClick={() => navigate("/register")}
+  className="shrink-0 px-5 py-2 text-sm"
+>
+  Get Started
+</Button>
   </div>
 </section>
 </main>
