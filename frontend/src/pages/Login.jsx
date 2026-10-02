@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import lightBackground from "../assets/register-light.png";
 import darkBackground from "../assets/register-dark.png";
 import logo from "../assets/logo.png";
+import api from "../api/axios";
+
 
 function Login() {
   const navigate = useNavigate();
@@ -13,9 +15,72 @@ function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [formError, setFormError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const { theme, setTheme } = useContext(ThemeContext);
   const darkMode = theme === "dark";
+
+  const handlePatientLogin = async () => {
+  console.log("PATIENT LOGIN BUTTON CLICKED");
+
+  setFormError("");
+  setSuccessMessage("");
+
+  try {
+    const response = await api.post("/api/patient/login/", {
+      email,
+      password,
+    });
+
+    localStorage.setItem("accessToken", response.data.access);
+    localStorage.setItem("refreshToken", response.data.refresh);
+
+    setSuccessMessage("Patient login successful!");
+
+    const userResponse = await api.get("/api/accounts/me/");
+    console.log("Authenticated patient:", userResponse.data);
+
+  } catch (error) {
+    console.error("Patient login failed:", error);
+    console.log("Patient backend response:", error.response?.data);
+
+    setFormError(
+      error.response?.data?.detail ||
+        "Patient login failed. Please check your credentials."
+    );
+  }
+};
+
+const handleDoctorLogin = async () => {
+  console.log("DOCTOR LOGIN BUTTON CLICKED");
+
+  setFormError("");
+  setSuccessMessage("");
+
+  try {
+    const response = await api.post("/api/doctor/login/", {
+      email,
+      password,
+    });
+
+    localStorage.setItem("accessToken", response.data.access);
+    localStorage.setItem("refreshToken", response.data.refresh);
+
+    setSuccessMessage("Doctor login successful!");
+
+    const userResponse = await api.get("/api/accounts/me/");
+    console.log("Authenticated doctor:", userResponse.data);
+
+  } catch (error) {
+    console.error("Doctor login failed:", error);
+    console.log("Doctor backend response:", error.response?.data);
+
+    setFormError(
+      error.response?.data?.detail ||
+        "Doctor login failed. Please check your credentials."
+    );
+  }
+};
 
   return (
     <div className="relative min-h-screen overflow-hidden px-6 py-8">
@@ -384,6 +449,11 @@ function Login() {
               {/* Login */}
               <button
                 type="button"
+                onClick={
+  role === "patient"
+    ? handlePatientLogin
+    : handleDoctorLogin
+}
                 className="w-full h-12 mt-6 rounded-lg bg-[#20aaa9] text-white font-semibold hover:bg-[#159b9d] transition"
               >
                 Login
