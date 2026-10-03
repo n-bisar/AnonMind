@@ -21,8 +21,6 @@ function Login() {
   const darkMode = theme === "dark";
 
   const handlePatientLogin = async () => {
-  console.log("PATIENT LOGIN BUTTON CLICKED");
-
   setFormError("");
   setSuccessMessage("");
 
@@ -35,25 +33,16 @@ function Login() {
     localStorage.setItem("accessToken", response.data.access);
     localStorage.setItem("refreshToken", response.data.refresh);
 
-    setSuccessMessage("Patient login successful!");
-
-    const userResponse = await api.get("/api/accounts/me/");
-    console.log("Authenticated patient:", userResponse.data);
-
+    setSuccessMessage("Login successful!");
   } catch (error) {
-    console.error("Patient login failed:", error);
-    console.log("Patient backend response:", error.response?.data);
-
     setFormError(
       error.response?.data?.detail ||
-        "Patient login failed. Please check your credentials."
+        "Login failed. Please try again."
     );
   }
 };
 
 const handleDoctorLogin = async () => {
-  console.log("DOCTOR LOGIN BUTTON CLICKED");
-
   setFormError("");
   setSuccessMessage("");
 
@@ -66,21 +55,15 @@ const handleDoctorLogin = async () => {
     localStorage.setItem("accessToken", response.data.access);
     localStorage.setItem("refreshToken", response.data.refresh);
 
-    setSuccessMessage("Doctor login successful!");
-
-    const userResponse = await api.get("/api/accounts/me/");
-    console.log("Authenticated doctor:", userResponse.data);
-
+    setSuccessMessage("Login successful!");
   } catch (error) {
-    console.error("Doctor login failed:", error);
-    console.log("Doctor backend response:", error.response?.data);
-
     setFormError(
       error.response?.data?.detail ||
-        "Doctor login failed. Please check your credentials."
+        "Login failed. Please try again."
     );
   }
 };
+  
 
   return (
     <div className="relative min-h-screen overflow-hidden px-6 py-8">
@@ -335,7 +318,11 @@ const handleDoctorLogin = async () => {
 
                   <button
                     type="button"
-                    onClick={() => setRole("patient")}
+                    onClick={() => {
+                        setRole("patient");
+                        setFormError("");
+                        setSuccessMessage("");
+                      }}
                     className={`py-3 rounded-lg border text-sm font-semibold transition ${
                       role === "patient"
                         ? darkMode
@@ -351,7 +338,11 @@ const handleDoctorLogin = async () => {
 
                   <button
                     type="button"
-                    onClick={() => setRole("doctor")}
+                    onClick={() => {
+                        setRole("doctor");
+                        setFormError("");
+                        setSuccessMessage("");
+                      }}
                     className={`py-3 rounded-lg border text-sm font-semibold transition ${
                       role === "doctor"
                         ? darkMode
@@ -445,15 +436,21 @@ const handleDoctorLogin = async () => {
                 </button>
 
               </div>
+                  {formError && (
+  <p className="mt-4 text-sm text-red-500 text-center">
+    {formError}
+  </p>
+)}
 
+{successMessage && (
+  <p className="mt-4 text-sm text-[#159b9d] text-center">
+    {successMessage}
+  </p>
+)}
               {/* Login */}
               <button
                 type="button"
-                onClick={
-  role === "patient"
-    ? handlePatientLogin
-    : handleDoctorLogin
-}
+                onClick={role === "patient" ? handlePatientLogin : handleDoctorLogin}
                 className="w-full h-12 mt-6 rounded-lg bg-[#20aaa9] text-white font-semibold hover:bg-[#159b9d] transition"
               >
                 Login
