@@ -75,6 +75,13 @@ class PatientLoginSerializer(serializers.Serializer):
             }
         )
 
+        if user.role != User.Role.PATIENT:
+            raise serializers.ValidationError(
+            {
+                "detail": "Email does not exist."
+            }
+        )
+
         if not user.email_verified:
             raise serializers.ValidationError(
         {
@@ -209,7 +216,12 @@ class DoctorLoginSerializer(serializers.Serializer):
                     "detail": "Invalid email or password."
                 }
                 )
-
+            if user.role != User.Role.DOCTOR:
+                raise serializers.ValidationError(
+                {
+                    "detail": "Email does not exist."
+                }
+             )
             if not user.email_verified:
                 raise serializers.ValidationError(
                 {

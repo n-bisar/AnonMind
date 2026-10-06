@@ -79,7 +79,7 @@ const handleDoctorLogin = async () => {
       />
 
       {/* Header */}
-      <header className="relative z-10 flex items-center justify-between px-8 md:px-12 py-5">
+      <header className="relative z-10 w-full max-w-6xl mx-auto flex items-center justify-between px-8 md:px-12 py-5">
 
         {/* Logo */}
         <div className="flex items-center gap-3">
@@ -108,7 +108,17 @@ const handleDoctorLogin = async () => {
           >
             Don't have an account?
           </span>
-
+            <button
+            type="button"
+            onClick={() => navigate("/register")}
+            className={`border px-5 py-2 rounded-lg text-sm font-medium transition ${
+              darkMode
+                ? "border-[#2ab9b5] text-[#2ab9b5] hover:bg-[#1b3d4d]"
+                : "border-[#22aaa8] text-[#159b9d] hover:bg-[#e8f8f8]"
+            }`}
+          >
+            Get Started
+          </button>
           <button
             type="button"
             onClick={() =>
@@ -123,17 +133,7 @@ const handleDoctorLogin = async () => {
             {theme === "light" ? "🌙" : "☀️"}
           </button>
 
-          <button
-            type="button"
-            onClick={() => navigate("/register")}
-            className={`border px-5 py-2 rounded-lg text-sm font-medium transition ${
-              darkMode
-                ? "border-[#2ab9b5] text-[#2ab9b5] hover:bg-[#1b3d4d]"
-                : "border-[#22aaa8] text-[#159b9d] hover:bg-[#e8f8f8]"
-            }`}
-          >
-            Get Started
-          </button>
+          
 
         </div>
       </header>
