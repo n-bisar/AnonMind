@@ -1,8 +1,9 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Home from './pages/Home'
-import Register from './pages/Register'
-import Login from './pages/Login'
-import PatientDashboard from './pages/PatientDashboard'
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import AIChat from "./pages/AIChat";
 
 function App() {
   return (
@@ -11,10 +12,10 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/patient/dashboard" element={<PatientDashboard />} />
+        <Route path="/ai-chat" element={<AIChat />} />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;

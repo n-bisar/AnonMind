@@ -83,3 +83,20 @@
 
   --color-border: var(--border);
 }
+
+
+@keyframes green-flow {
+  from {
+    transform: translateY(18%) scale(0.9);
+    opacity: 0.4;
+  }
+
+  to {
+    transform: translateY(-22%) scale(1.15);
+    opacity: 1;
+  }
+}
+
+.animate-green-flow {
+  animation: green-flow 3s ease-out forwards;
+}
