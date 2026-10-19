@@ -2,6 +2,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ThemeContext from "../context/ThemeContext";
+import api from "../api/axios";
 
 const STORAGE_KEY = "anonmind_conversations";
 const ACTIVE_KEY = "anonmind_active_conversation";
@@ -14,7 +15,7 @@ const createConversation = () => ({
   messages: [
     {
       role: "assistant",
-      text: "Hi, I'm Anya. 🌿\n\nI'm here to listen, without judgment. This is your space to talk about what's on your mind, at your own pace. What's been going on for you today?",
+      text:"I'm Anya, and I'm here to listen, without judgment. This is your space to talk about what's on your mind, at your own pace. What's been going on for you today?",
     },
   ],
 });
@@ -32,6 +33,89 @@ function AIChat() {
   const { theme, setTheme } = useContext(ThemeContext);
   const darkMode = theme === "dark";
   const navigate = useNavigate();
+  
+  const [patientName, setPatientName] = useState("");
+  const [currentGreeting, setCurrentGreeting] = useState("");
+
+useEffect(() => {
+  const updateGreeting = () => {
+    const hour = new Date().getHours();
+
+    if (hour >= 5 && hour < 12) {
+      setCurrentGreeting("Good morning");
+    } else if (hour >= 12 && hour < 17) {
+      setCurrentGreeting("Good afternoon");
+    } else if (hour >= 17 && hour < 21) {
+      setCurrentGreeting("Good evening");
+    } else if (hour >= 21) {
+      setCurrentGreeting("Hey");
+    } else {
+      setCurrentGreeting("Still awake");
+    }
+  };
+
+  updateGreeting();
+}, []);
+
+useEffect(() => {
+  let cancelled = false;
+
+  const fetchPatientProfile = async () => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+
+      const response = await api.get("/api/patient/profile/", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!cancelled) {
+        const fullName = response.data.full_name?.trim();
+        const firstName = fullName ? fullName.split(/\s+/)[0] : "";
+        setPatientName(firstName);
+
+        // Remove the old personalized greeting from untouched conversations.
+        // The personalized greeting now belongs in the welcome heading only.
+        setConversations((previous) =>
+          previous.map((conversation) => {
+            const messages = conversation.messages || [];
+
+            if (
+              messages.length === 1 &&
+              messages[0].role === "assistant" &&
+              (messages[0].text.startsWith("Hi,") ||
+                messages[0].text.startsWith("Hi, I'm Anya."))
+            ) {
+              return {
+                ...conversation,
+                messages: [
+                  {
+                    ...messages[0],
+                    text: "I'm Anya, and I'm here to listen, without judgment. This is your space to talk about what's on your mind, at your own pace. What's been going on for you today?",
+                  },
+                ],
+              };
+            }
+
+            return conversation;
+          })
+        );
+      }
+    } catch (error) {
+      if (!cancelled) {
+        setPatientName("");
+      }
+    }
+  };
+
+  fetchPatientProfile();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
+
 
   const [conversations, setConversations] = useState(() => {
     try {
@@ -490,8 +574,10 @@ function AIChat() {
                 </div>
 
                 <h3 className="mt-4 text-xl font-semibold">
-                  A moment for yourself
-                </h3>
+  {currentGreeting === "Still awake"
+    ? `${patientName ? `${patientName}, ` : ""}still awake?`
+    : `${currentGreeting}${patientName ? `, ${patientName}` : ""}${currentGreeting === "Hey" ? "! Still up?" : "!"}`} 🌿
+</h3>
 
                 <p className="mt-2 text-sm opacity-60">
                   Take your time. You don't have to figure everything out at

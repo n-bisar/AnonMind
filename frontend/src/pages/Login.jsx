@@ -34,6 +34,7 @@ function Login() {
     localStorage.setItem("refreshToken", response.data.refresh);
 
     setSuccessMessage("Login successful!");
+    navigate("/ai-chat");
   } catch (error) {
     setFormError(
       error.response?.data?.detail ||
