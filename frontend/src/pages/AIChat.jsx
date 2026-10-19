@@ -14,7 +14,7 @@ const createConversation = () => ({
   messages: [
     {
       role: "assistant",
-      text: "Hi, welcome to AnonMind. 🌿\n\nThis is a space where you can talk about what's on your mind at your own pace. What's been going on for you today?",
+      text: "Hi, I'm Anya. 🌿\n\nI'm here to listen, without judgment. This is your space to talk about what's on your mind, at your own pace. What's been going on for you today?",
     },
   ],
 });
@@ -65,6 +65,7 @@ function AIChat() {
   const [isComposerActive, setIsComposerActive] = useState(false);
   const [renamingId, setRenamingId] = useState(null);
   const [renameValue, setRenameValue] = useState("");
+  const [openMenuId, setOpenMenuId] = useState(null);
 
   const activeConversation =
     conversations.find((conversation) => conversation.id === activeId) ||
@@ -272,15 +273,15 @@ function AIChat() {
               <div className="space-y-2">
                 {conversations.map((conversation) => (
                   <div
-                    key={conversation.id}
-                    className={`group rounded-xl p-3 transition ${
-                      conversation.id === activeId
-                        ? darkMode
-                          ? "bg-slate-800/80"
-                          : "bg-emerald-50/90"
-                        : "hover:bg-teal-500/10"
-                    }`}
-                  >
+  key={conversation.id}
+  className={`group relative rounded-lg px-3 py-3 transition ${
+    conversation.id === activeId
+      ? darkMode
+        ? "bg-slate-800/70"
+        : "bg-emerald-50/80"
+      : "hover:bg-teal-500/10"
+  }`}
+>
                     {renamingId === conversation.id ? (
                       <form
                         onSubmit={(event) => {
@@ -324,26 +325,59 @@ function AIChat() {
                       </button>
                     )}
 
-                    <div className="mt-2 flex gap-3 text-xs opacity-0 transition group-hover:opacity-100 focus-within:opacity-100">
-                      <button
-                        onClick={() => {
-                          setRenamingId(conversation.id);
-                          setRenameValue(conversation.title);
-                        }}
-                        className="text-emerald-500 hover:underline"
-                      >
-                        Rename
-                      </button>
+                    
+<div className="absolute right-2 top-2">
+  <button
+    type="button"
+    aria-label="Conversation options"
+    title="Conversation options"
+    onClick={(event) => {
+      event.stopPropagation();
+      setOpenMenuId(
+        openMenuId === conversation.id ? null : conversation.id
+      );
+    }}
+    className="rounded-md px-2 py-1 text-lg leading-none opacity-0 transition hover:bg-slate-500/20 group-hover:opacity-100 focus:opacity-100"
+  >
+    ⋯
+  </button>
 
-                      <button
-                        onClick={() =>
-                          handleDeleteConversation(conversation.id)
-                        }
-                        className="text-red-400 hover:underline"
-                      >
-                        Delete
-                      </button>
-                    </div>
+  {openMenuId === conversation.id && (
+    <div
+      className={`absolute right-0 top-8 z-50 w-36 rounded-lg border p-1 shadow-xl ${
+        darkMode
+          ? "border-slate-700 bg-slate-900"
+          : "border-slate-200 bg-white"
+      }`}
+    >
+      <button
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          setRenamingId(conversation.id);
+          setRenameValue(conversation.title);
+          setOpenMenuId(null);
+        }}
+        className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-teal-500/10"
+      >
+        Rename
+      </button>
+
+      <button
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          setOpenMenuId(null);
+          handleDeleteConversation(conversation.id);
+        }}
+        className="w-full rounded-md px-3 py-2 text-left text-sm text-red-500 hover:bg-red-500/10"
+      >
+        Delete
+      </button>
+    </div>
+  )}
+</div>
+
                   </div>
                 ))}
               </div>
@@ -393,7 +427,7 @@ function AIChat() {
           <button
             onClick={() => setSidebarCollapsed(false)}
             aria-label="Expand sidebar"
-            className="absolute left-3 top-4 z-30 hidden rounded-lg border border-teal-500/30 bg-slate-900/80 px-3 py-2 text-lg text-teal-400 shadow-lg md:block"
+            className="absolute left-3 top-20 z-30 hidden rounded-lg border border-teal-500/30 bg-slate-900/80 px-3 py-2 text-lg text-teal-400 shadow-lg md:block"
           >
             ›
           </button>
