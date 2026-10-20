@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import AIChat from "./pages/AIChat";
 import PatientProtectedRoute from "./components/PatientProtectedRoute";
+import PatientDashboard from "./pages/PatientDashboard";
 
 function App() {
   return (
@@ -14,8 +15,10 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route element={<PatientProtectedRoute />}>
-  <Route path="/ai-chat" element={<AIChat />} />
-</Route>
+        <Route path="/ai-chat" element={<AIChat />} />
+        <Route path="/patient/dashboard" element={<PatientDashboard />}
+        />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
