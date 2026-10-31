@@ -419,7 +419,7 @@ const greetingIcon =
 >
   {greeting}
 </p>
-
+//HI
 <h2 className="mt-1 text-[35px] font-medium leading-tight tracking-[-0.045em] sm:text-5xl lg:text-[54px]">
   <span className="inline-flex flex-wrap items-center gap-2">
     <span>{firstName}</span>
